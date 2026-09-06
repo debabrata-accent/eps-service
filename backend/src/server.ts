@@ -12,15 +12,20 @@ const startServer = async (): Promise<void> => {
     // Connect DB (falls back to in-memory Mongo locally when MONGODB_URI is empty)
     const { usedMemoryServer } = await connectDB();
 
-    // Auto-seed users when using the in-memory DB (fresh each run)
-    if (usedMemoryServer) {
-      const { created } = await seedUsers();
-      console.log(`🌱 Seeded ${created} test users into in-memory DB`);
-      console.log('\n   Test credentials:');
-      SEED_USERS.forEach((u) => {
-        console.log(`   • ${u.role.padEnd(20)} ${u.username} / ${u.password}`);
-      });
-      console.log('');
+    // Seed the standard test users when:
+    //  - using the local in-memory DB (fresh each run), OR
+    //  - SEED_ON_START=true is set (e.g. first production deploy).
+    // seedUsers() is idempotent — it skips users that already exist, so this is
+    // safe to leave on; it will never duplicate or overwrite existing users.
+    if (usedMemoryServer || process.env.SEED_ON_START === 'true') {
+      const { created, skipped } = await seedUsers();
+      console.log(`🌱 Seed: ${created} created, ${skipped} already existed`);
+      if (created > 0) {
+        console.log('   Test credentials:');
+        SEED_USERS.forEach((u) => {
+          console.log(`   • ${u.role.padEnd(20)} ${u.username} / ${u.password}`);
+        });
+      }
     }
 
     // Init optional external services (safe no-op if not configured)
