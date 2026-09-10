@@ -55,6 +55,7 @@ export interface ILoginRequest {
 
 export interface ILoginResponse {
   accessToken: string;
+  refreshToken?: string; // returned for native (Capacitor) clients; web uses the cookie
   user: IUser;
 }
 

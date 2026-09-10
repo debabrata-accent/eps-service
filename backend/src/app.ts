@@ -24,10 +24,16 @@ app.use(helmet());
 
 // CLIENT_URL may hold one or several comma-separated origins
 // (e.g. "https://app.example.com,http://localhost:5173")
-const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
+const configuredOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
   .split(',')
   .map((o) => o.trim())
   .filter(Boolean);
+
+// Capacitor native apps send these origins. Always allow them so the Android/iOS
+// app can reach the API without extra env config.
+const nativeOrigins = ['capacitor://localhost', 'https://localhost', 'http://localhost'];
+
+const allowedOrigins = [...new Set([...configuredOrigins, ...nativeOrigins])];
 
 app.use(
   cors({

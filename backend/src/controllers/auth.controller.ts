@@ -42,10 +42,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   const accessToken = generateAccessToken(user._id.toString(), user.role as Role);
   const refreshToken = generateRefreshToken(user._id.toString());
 
+  // Web clients use the httpOnly cookie. Native (Capacitor) clients can't rely on
+  // cross-site cookies, so we ALSO return the refresh token in the body for them
+  // to store securely and send back explicitly on /auth/refresh.
   res.cookie(REFRESH_COOKIE, refreshToken, COOKIE_OPTIONS);
 
   sendSuccess(res, {
     accessToken,
+    refreshToken,
     user: {
       _id: user._id,
       username: user.username,
@@ -61,7 +65,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const refresh = async (req: Request, res: Response): Promise<void> => {
-  const token = req.cookies?.[REFRESH_COOKIE];
+  // Web: read from the httpOnly cookie. Native: read from Authorization header
+  // ("Bearer <refreshToken>") or the request body.
+  const headerToken = (req.headers['x-refresh-token'] as string | undefined)?.trim();
+  const bodyToken = (req.body?.refreshToken as string | undefined)?.trim();
+  const token = req.cookies?.[REFRESH_COOKIE] || headerToken || bodyToken;
+
   if (!token) {
     sendError(res, 'Refresh token required', 401);
     return;
