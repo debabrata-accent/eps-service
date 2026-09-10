@@ -1,4 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { isNative, refreshTokenStore } from '../utils/platform';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
@@ -50,7 +51,18 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const { data } = await api.post<{ data: { accessToken: string } }>('/auth/refresh');
+        // Web relies on the httpOnly cookie. Native sends the stored refresh token
+        // via the x-refresh-token header (cross-site cookies aren't reliable there).
+        const headers: Record<string, string> = {};
+        if (isNative()) {
+          const rt = refreshTokenStore.get();
+          if (rt) headers['x-refresh-token'] = rt;
+        }
+        const { data } = await api.post<{ data: { accessToken: string } }>(
+          '/auth/refresh',
+          {},
+          { headers }
+        );
         const newToken = data.data.accessToken;
         localStorage.setItem('accessToken', newToken);
         processQueue(null, newToken);
@@ -59,6 +71,7 @@ api.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError, null);
         localStorage.removeItem('accessToken');
+        if (isNative()) refreshTokenStore.clear();
         window.location.href = '/login';
         return Promise.reject(refreshError);
       } finally {

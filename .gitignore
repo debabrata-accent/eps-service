@@ -35,3 +35,13 @@ coverage/
 
 # Misc
 *.pem
+*.zip
+
+# Capacitor / Android build artifacts
+frontend/android/app/build/
+frontend/android/build/
+frontend/android/.gradle/
+frontend/android/captures/
+frontend/android/local.properties
+*.keystore
+*.jks
