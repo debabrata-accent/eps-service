@@ -43,5 +43,13 @@ frontend/android/build/
 frontend/android/.gradle/
 frontend/android/captures/
 frontend/android/local.properties
+
+# Android signing — NEVER commit these
 *.keystore
 *.jks
+key.properties
+frontend/android/key.properties
+
+# Built app bundles / packages
+*.aab
+*.apk
