@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1e3a8a"/>
+      <stop offset="1" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="bolt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fde047"/>
+      <stop offset="1" stop-color="#facc15"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <!-- Lightning bolt -->
+  <path d="M565 180 L360 560 L490 560 L455 844 L680 470 L540 470 Z"
+        fill="url(#bolt)" stroke="#fff8dc" stroke-width="6" stroke-linejoin="round"/>
+  <!-- Panel grid accent (subtle) -->
+  <g opacity="0.14" stroke="#93c5fd" stroke-width="8" fill="none">
+    <rect x="150" y="150" width="724" height="724" rx="90"/>
+  </g>
+</svg>
