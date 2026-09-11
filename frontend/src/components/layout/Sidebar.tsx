@@ -23,7 +23,7 @@ const navItems: Record<Role, Array<{ to: string; label: string; icon: React.Elem
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/queue', label: 'Job Queue', icon: List },
     { to: '/my-jobs', label: 'My Jobs', icon: Briefcase },
-    { to: '/reports', label: 'Reports', icon: BarChart2 },
+    { to: '/engineer/reports', label: 'Reports', icon: BarChart2 },
   ],
   [Role.CUSTOMER_EXECUTIVE]: [
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },

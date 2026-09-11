@@ -68,7 +68,8 @@ const App = () => (
               <Route path="/queue" element={<EngineerQueuePage />} />
               <Route path="/my-jobs" element={<MyJobsPage />} />
               <Route path="/my-jobs/:id" element={<JobDetailPage />} />
-              <Route path="/reports" element={<EngineerReportsPage />} />
+              {/* Unique path to avoid colliding with the Factory Owner's /reports */}
+              <Route path="/engineer/reports" element={<EngineerReportsPage />} />
             </Route>
 
             {/* Customer Executive */}

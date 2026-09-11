@@ -112,7 +112,7 @@ export const EngineerDashboardPage = () => {
       </section>
 
       {/* Link to full reports */}
-      <Link to="/reports" className="card p-4 flex items-center gap-3 hover:shadow-md transition-shadow group">
+      <Link to="/engineer/reports" className="card p-4 flex items-center gap-3 hover:shadow-md transition-shadow group">
         <div className="h-10 w-10 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center">
           <BarChart2 className="h-5 w-5" />
         </div>
