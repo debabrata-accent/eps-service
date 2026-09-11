@@ -18,6 +18,7 @@ import { PaymentPage } from './pages/owner/PaymentPage';
 import { OwnerReportsPage } from './pages/owner/OwnerReportsPage';
 
 // Engineer
+import { EngineerDashboardPage } from './pages/engineer/EngineerDashboardPage';
 import { EngineerQueuePage } from './pages/engineer/EngineerQueuePage';
 import { MyJobsPage } from './pages/engineer/MyJobsPage';
 import { JobDetailPage } from './pages/engineer/JobDetailPage';
