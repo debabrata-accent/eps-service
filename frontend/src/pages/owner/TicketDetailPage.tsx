@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, CheckCircle, XCircle, CreditCard, MessageSquare } from 'lucide-react';
+import { ArrowLeft, CheckCircle, XCircle, CreditCard, MessageSquare, MapPin } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ticketService } from '../../services/ticket.service';
 import { StatusBadge } from '../../components/ui/StatusBadge';
@@ -54,6 +54,17 @@ export const TicketDetailPage = () => {
       setShowRejectDialog(false);
     },
     onError: () => toast.error('Failed to reject quote'),
+  });
+
+  // TEMPORARY (testing): defer payment to on-site
+  const payAtSiteMutation = useMutation({
+    mutationFn: () => ticketService.payAtSite(id!),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['ticket', id] });
+      qc.invalidateQueries({ queryKey: ['ticket-history', id] });
+      toast.success('Pay at site selected. Waiting for admin approval.');
+    },
+    onError: () => toast.error('Failed to select Pay at Site'),
   });
 
   const followUpMutation = useMutation({
@@ -135,13 +146,21 @@ export const TicketDetailPage = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex gap-3">
+              <div className="flex flex-wrap gap-3">
                 <button
                   onClick={() => setShowApproveDialog(true)}
                   className="btn-primary flex items-center gap-2"
                 >
                   <CheckCircle className="h-4 w-4" />
-                  Approve Quote
+                  Approve &amp; Pay Online
+                </button>
+                <button
+                  onClick={() => payAtSiteMutation.mutate()}
+                  disabled={payAtSiteMutation.isPending}
+                  className="btn-secondary flex items-center gap-2"
+                >
+                  <MapPin className="h-4 w-4" />
+                  {payAtSiteMutation.isPending ? 'Processing...' : 'Pay at Site'}
                 </button>
                 <button
                   onClick={() => setShowRejectDialog(true)}
@@ -151,6 +170,10 @@ export const TicketDetailPage = () => {
                   Request Revision
                 </button>
               </div>
+              <p className="text-xs text-gray-400 mt-3">
+                "Pay at Site" lets you settle the advance in person; the admin will
+                approve and dispatch an engineer.
+              </p>
             </section>
           )}
 

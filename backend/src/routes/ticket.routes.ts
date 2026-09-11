@@ -3,7 +3,7 @@ import {
   createTicket, getMyTickets, getAllTickets, getTicketById,
   updateTicket, submitTicket, cancelTicket,
   markUnderReview, proposeCost, approveTicket, rejectTicket,
-  approveQuote, rejectQuote,
+  approveQuote, rejectQuote, payAtSite,
   getEngineerQueue, selfAssignTicket, getMyAssignedTickets,
   updateEngineerStatus, getTicketHistory, createFollowUp,
 } from '../controllers/ticket.controller';
@@ -71,6 +71,8 @@ router.patch('/:id/submit', requireRole(Role.FACTORY_OWNER), asyncHandler(submit
 // Factory Owner: quote response
 router.patch('/:id/approve-quote', requireRole(Role.FACTORY_OWNER), asyncHandler(approveQuote));
 router.patch('/:id/reject-quote', requireRole(Role.FACTORY_OWNER), asyncHandler(rejectQuote));
+// TEMPORARY (testing): let owner defer payment to on-site, marking advance as paid
+router.patch('/:id/pay-at-site', requireRole(Role.FACTORY_OWNER), asyncHandler(payAtSite));
 
 // Factory Owner: follow-up
 router.post('/:id/follow-up', requireRole(Role.FACTORY_OWNER), asyncHandler(createFollowUp));

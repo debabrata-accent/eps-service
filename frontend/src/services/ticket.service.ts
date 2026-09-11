@@ -28,6 +28,12 @@ export const ticketService = {
     return res.data.data;
   },
 
+  // TEMPORARY (testing): defer payment to on-site so the flow can continue without Razorpay
+  payAtSite: async (id: string): Promise<ITicket> => {
+    const res = await api.patch<ApiResponse<ITicket>>(`/tickets/${id}/pay-at-site`);
+    return res.data.data;
+  },
+
   createFollowUp: async (id: string, note: string): Promise<void> => {
     await api.post(`/tickets/${id}/follow-up`, { note });
   },

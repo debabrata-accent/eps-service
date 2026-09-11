@@ -334,6 +334,32 @@ export const approveQuote = async (req: Request, res: Response): Promise<void> =
   sendSuccess(res, ticket, 'Quote approved. Please proceed to payment.');
 };
 
+export const payAtSite = async (req: Request, res: Response): Promise<void> => {
+  const ticket = await Ticket.findOne({
+    _id: req.params.id,
+    ownerId: req.user!.userId,
+    status: TicketStatus.COST_PROPOSED,
+  });
+  if (!ticket) {
+    sendError(res, 'Ticket not found or quote not pending', 404);
+    return;
+  }
+
+  const oldStatus = ticket.status;
+  ticket.status = TicketStatus.ADVANCE_PENDING;
+  ticket.paymentStatus = PaymentStatus.PAID;
+  await ticket.save();
+  await recordHistory(
+    ticket._id,
+    oldStatus,
+    TicketStatus.ADVANCE_PENDING,
+    req.user!.userId,
+    'Customer chose to pay at site'
+  );
+
+  sendSuccess(res, ticket, 'Pay at site selected. Waiting for admin approval.');
+};
+
 export const rejectQuote = async (req: Request, res: Response): Promise<void> => {
   const ticket = await Ticket.findOne({
     _id: req.params.id,
